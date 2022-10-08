@@ -203,6 +203,8 @@ EOF
 # Clone lab repositories
     cd ~/environment
     git clone ${REPO_PATH}
+    cp eks-update-exam-candidate/submit.sh .
+    chmod +x ./submit.sh
 
 # Install exam keep-alive application
     wget https://raw.githubusercontent.com/yubingjiaocn/eks-upgrade-exam/main/keepalive_app/manifest.yml

@@ -37,9 +37,9 @@ if [ -z $TEST_INGRESS ];
 then 
     echo "You haven't deploy the test application or I can't find it. Don't change the name of Ingress since it's hardcoded."
 else    
-    jq -n \      
-        --arg url "$KEEPALIVE_INGRESS"\
-        --arg id "$ACCOUNT_ID"\
+    jq -n \
+        --arg url "$TEST_INGRESS" \
+        --arg id "$ACCOUNT_ID" \
         '{URL: $url, AWSAccountID: $id}'  > /tmp/submit.json
 
     curl ${SUBMIT_URL} -H "Content-Type: application/json" -X POST -d @/tmp/submit.json
