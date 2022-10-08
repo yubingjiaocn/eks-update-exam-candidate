@@ -59,7 +59,7 @@ pip install --user --upgrade awscli
 
 # Install awscli v2
 curl -O "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip"
-unzip -o awscli-exe-linux-x86_64.zip
+unzip -q -o awscli-exe-linux-x86_64.zip
 sudo ./aws/install
 rm awscli-exe-linux-x86_64.zip
 
@@ -183,6 +183,7 @@ EOF
     --policy-document file://iam_policy.json
 
     rm -rf iam_policy.json
+    sleep 2
 
     eksctl create iamserviceaccount \
     --cluster=${EKS_CLUSTER_NAME} \
@@ -197,6 +198,7 @@ EOF
     --set clusterName=${EKS_CLUSTER_NAME} \
     --set serviceAccount.create=false \
     --set serviceAccount.name=aws-load-balancer-controller 
+    --wait
 
 # Clone lab repositories
     cd ~/environment
