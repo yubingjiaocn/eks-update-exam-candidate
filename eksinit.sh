@@ -26,8 +26,8 @@
 # Purpose: Use for eks upgrade exam
 #==============================================================================
 
-REPO_PATH = "https://github.com/yubingjiaocn/eks-update-exam-candidate.git"
-ADD_URL = https://je5rwctnad.execute-api.ap-southeast-1.amazonaws.com/Prod/add_candidate
+REPO_PATH="https://github.com/yubingjiaocn/eks-update-exam-candidate.git"
+ADD_URL=https://je5rwctnad.execute-api.ap-southeast-1.amazonaws.com/Prod/add_candidate
 
 
 read -p 'Please input your name in full Pinyin. (e.g. Yu Bingjiao) :' CANDIDATE_NAME
@@ -210,7 +210,7 @@ EOF
     KEEPALIVE_INGRESS=$(kubectl get ingress exam-keepalive -n exam -o=jsonpath='{.status.loadBalancer.ingress[0].hostname}')
     echo "export KEEPALIVE_INGRESS=${KEEPALIVE_INGRESS}" | tee -a ~/.bash_profile
     rm manifest.yml
-    
+
     jq -n \
       --arg cn "$CANDIDATE_NAME" \
       --arg url "$KEEPALIVE_INGRESS" \
