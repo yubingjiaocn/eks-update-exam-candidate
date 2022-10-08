@@ -197,7 +197,7 @@ EOF
     -n kube-system \
     --set clusterName=${EKS_CLUSTER_NAME} \
     --set serviceAccount.create=false \
-    --set serviceAccount.name=aws-load-balancer-controller 
+    --set serviceAccount.name=aws-load-balancer-controller \
     --wait
 
 # Clone lab repositories
