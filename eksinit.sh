@@ -30,7 +30,7 @@ REPO_PATH="https://github.com/yubingjiaocn/eks-update-exam-candidate.git"
 ADD_URL=https://je5rwctnad.execute-api.ap-southeast-1.amazonaws.com/Prod/add_candidate
 
 
-read -p 'Please input your name in full Pinyin. (e.g. Yu Bingjiao) :' CANDIDATE_NAME
+read -p 'Please input your name in full Pinyin without space. (e.g. YuBingjiao) :' CANDIDATE_NAME
 echo "export CANDIDATE_NAME=${CANDIDATE_NAME}" | tee -a ~/.bash_profile
 
 ####################
@@ -183,7 +183,7 @@ EOF
     --policy-document file://iam_policy.json
 
     rm -rf iam_policy.json
-    sleep 2
+    sleep 5
 
     eksctl create iamserviceaccount \
     --cluster=${EKS_CLUSTER_NAME} \
@@ -206,7 +206,7 @@ EOF
 
 # Install exam keep-alive application
     wget https://raw.githubusercontent.com/yubingjiaocn/eks-upgrade-exam/main/keepalive_app/manifest.yml
-    sed -i "s/$CANDIDATE_NAME/Anonymous/" manifest.yml
+    sed -i "s/Anonymous/$CANDIDATE_NAME/g" manifest.yml
     kubectl apply --server-side -f manifest.yml
     sleep 5
     KEEPALIVE_INGRESS=$(kubectl get ingress exam-keepalive -n exam -o=jsonpath='{.status.loadBalancer.ingress[0].hostname}')
