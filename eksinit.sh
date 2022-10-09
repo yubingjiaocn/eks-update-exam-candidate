@@ -135,6 +135,32 @@ then
 # Enable IAM OIDC provider    
     eksctl utils associate-iam-oidc-provider --cluster ${EKS_CLUSTER_NAME} --region ${AWS_REGION} --approve
 
+# Install AWS Load Balancer Controller
+    echo "Installing AWS Load Balancer Controller"
+    curl -o iam_policy.json https://raw.githubusercontent.com/kubernetes-sigs/aws-load-balancer-controller/v2.4.3/docs/install/iam_policy.json
+
+    aws iam create-policy \
+    --policy-name AWSLoadBalancerControllerIAMPolicy \
+    --policy-document file://iam_policy.json
+
+    rm -rf iam_policy.json
+    sleep 5
+
+    eksctl create iamserviceaccount \
+    --cluster=${EKS_CLUSTER_NAME} \
+    --namespace=kube-system \
+    --name=aws-load-balancer-controller \
+    --role-name "AmazonEKSLoadBalancerControllerRole" \
+    --attach-policy-arn=arn:aws:iam::${ACCOUNT_ID}:policy/AWSLoadBalancerControllerIAMPolicy \
+    --approve
+
+    helm install aws-load-balancer-controller eks/aws-load-balancer-controller \
+    -n kube-system \
+    --set clusterName=${EKS_CLUSTER_NAME} \
+    --set serviceAccount.create=false \
+    --set serviceAccount.name=aws-load-balancer-controller \
+    --wait
+
 # Add unmanaged nodegroup for testing
 
     echo "Adding unmanaged node group"
@@ -174,31 +200,6 @@ EOF
     rm -f ./cluster-config.yaml 
     kubectl get node
 
-# Install AWS Load Balancer Controller
-    echo "Installing AWS Load Balancer Controller"
-    curl -o iam_policy.json https://raw.githubusercontent.com/kubernetes-sigs/aws-load-balancer-controller/v2.4.3/docs/install/iam_policy.json
-
-    aws iam create-policy \
-    --policy-name AWSLoadBalancerControllerIAMPolicy \
-    --policy-document file://iam_policy.json
-
-    rm -rf iam_policy.json
-    sleep 5
-
-    eksctl create iamserviceaccount \
-    --cluster=${EKS_CLUSTER_NAME} \
-    --namespace=kube-system \
-    --name=aws-load-balancer-controller \
-    --role-name "AmazonEKSLoadBalancerControllerRole" \
-    --attach-policy-arn=arn:aws:iam::${ACCOUNT_ID}:policy/AWSLoadBalancerControllerIAMPolicy \
-    --approve
-
-    helm install aws-load-balancer-controller eks/aws-load-balancer-controller \
-    -n kube-system \
-    --set clusterName=${EKS_CLUSTER_NAME} \
-    --set serviceAccount.create=false \
-    --set serviceAccount.name=aws-load-balancer-controller \
-    --wait
 
 # Clone lab repositories
     cd ~/environment
