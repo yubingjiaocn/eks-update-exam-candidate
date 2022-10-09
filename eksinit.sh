@@ -148,6 +148,7 @@ then
 
     eksctl create iamserviceaccount \
     --cluster=${EKS_CLUSTER_NAME} \
+    --region ${AWS_REGION} \ 
     --namespace=kube-system \
     --name=aws-load-balancer-controller \
     --role-name "AmazonEKSLoadBalancerControllerRole" \
